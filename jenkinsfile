@@ -2,16 +2,23 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
+        stage('checkout') {
             steps {
-                
-        }
-        stage ('build docker file') {
-            steps {
-                script {
-                    bat "docker build -t webapp:1.0 ."
-                }
+                git credentialsId: '5b96bf8e-739e-44b5-b1d6-576865e1dbf4', url: 'https://github.com/joash-emmanuel/webapp.git'
             }
-        }   
+        }
+        stage ('build docker image') {
+            steps {
+                bat "docker build -t joashemmanuel/webapp:1.0 ."
+            }
+        }
+        stage ('push docker image') {
+            steps {
+                withCredentials([usernameColonPassword(credentialsId: 'joashemmanuel', variable: 'dockerhub')]) {
+                    bat "docker login -u joashemmanuel -p $dockerhub"
+                    bat "docker push joashemmanuel/webapp:1.0"
+                }    
+            }
+        }
     }
 }
