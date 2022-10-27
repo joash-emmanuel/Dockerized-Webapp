@@ -20,5 +20,10 @@ pipeline {
                 }
             }
         }
+         stage ('run image') {
+            steps {
+                bat "docker run -d joashemmanuel/webapp:1.2"
+            }
+        }
     }
 }
