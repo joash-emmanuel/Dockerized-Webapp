@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    
     stages {
         stage('checkout') {
             steps {
@@ -9,15 +9,14 @@ pipeline {
         }
         stage ('build docker image') {
             steps {
-                bat "docker build -t joashemmanuel/webapp:1.0 ."
+                bat "docker build -t joashemmanuel/webapp:1.2 ."
             }
         }
-        stage ('push docker image') {
+        stage (' pushing image to docker hub') {
             steps {
-                withCredentials([usernameColonPassword(credentialsId: 'joashemmanuel', variable: 'dockerhub')]) {
-                    bat "docker login -u joashemmanuel -p $dockerhub"
-                    bat "docker push joashemmanuel/webapp:1.0"
-                }    
+                withDockerRegistry([ credentialsId: "dockerhub_logins", url: "" ]) {
+                    bat "docker push joashemmanuel/webapp:1.2"
+                }
             }
         }
     }
